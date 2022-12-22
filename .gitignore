@@ -1,0 +1,7 @@
+# vs code settings
+.vscode
+# .gitignore
+.env
+
+node_modules
+logs
