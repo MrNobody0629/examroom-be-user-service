@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "npm run test"
+    "test": "npm run test",
+    "dev": "node server.js"
   },
   "author": "Anuj Verma",
   "license": "ISC",
