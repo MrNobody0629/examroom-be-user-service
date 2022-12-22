@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./src/db');
-const { connectRedis } = require('./src/middlewares/rateLimiter');
+require('./src/middlewares/rateLimiter');
 const { errorHandler, AppError } = require('./src/utils/errorHandler');
 
 const app = express();
@@ -18,7 +18,7 @@ const { serverConfig } = config;
 const PORT = serverConfig.port ? serverConfig.port : 3000;
 
 app.use(express.json());
-connectRedis();
+// connectRedis();
 connectDB();
 
 require('./src/routes')(app);

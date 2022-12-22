@@ -1,19 +1,31 @@
 const moment = require('moment');
-const redis = require('redis');
-const redisClient = redis.createClient();
+const Redis = require('ioredis');
+const config = require('../config');
+const { AppError } = require('../utils/errorHandler');
+
+if (!('redisConfig' in config)) {
+  throw new AppError('rateLimiter.js', 'redisConfig required', 'custom', 404);
+}
+const { redisConfig } = config;
+const { uri, port, password } = redisConfig;
+
+const redisClient = Redis.createClient({
+  port,
+  host: uri,
+  password,
+});
+
+redisClient.on('connect', function (error) {
+  if (!error) {
+    console.log('Redis connected successfully!');
+  } else {
+    console.log(`Redis Client Error ${error}`);
+  }
+});
+
 const WINDOW_SIZE_IN_HOURS = 1;
 const EXPIRY_TIME = 60 * 60 * WINDOW_SIZE_IN_HOURS;
 const MAX_WINDOW_REQUEST_COUNT = 3;
-
-redisClient.on('error', (err) => console.log('Redis Client Error', err));
-exports.connectRedis = async () => {
-  try {
-    await redisClient.connect();
-    console.log('Redis Client Connected Succesfully');
-  } catch (error) {
-    console.log('Redis Client Error', error);
-  }
-};
 
 exports.customRedisRateLimiter = async (req, res, next) => {
   try {
@@ -31,7 +43,7 @@ exports.customRedisRateLimiter = async (req, res, next) => {
           requestCount: 1,
         },
       ]);
-      await redisClient.setEx(req.ip, EXPIRY_TIME, ipData);
+      await redisClient.setex(req.ip, EXPIRY_TIME, ipData);
       return next();
     }
 
@@ -55,7 +67,7 @@ exports.customRedisRateLimiter = async (req, res, next) => {
         requestCount: 1,
       };
       requestsWithinTime.push(ipData);
-      await redisClient.setEx(
+      await redisClient.setex(
         req.ip,
         EXPIRY_TIME,
         JSON.stringify(requestsWithinTime)

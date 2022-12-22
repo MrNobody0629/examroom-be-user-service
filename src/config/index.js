@@ -10,4 +10,9 @@ module.exports = {
   dbConfig: {
     mongoUrlString: process.env.MONGO_DB_URL,
   },
+  redisConfig: {
+    uri: process.env.REDIS_URL,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASSWORD,
+  },
 };
