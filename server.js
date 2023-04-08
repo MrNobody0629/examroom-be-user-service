@@ -24,7 +24,7 @@ connectDB();
 require('./src/routes')(app);
 
 app.get('/', function (req, res) {
-  res.json({ message: 'Server is running in latest pull' });
+  res.json({ message: 'Server is running' });
 });
 
 app.use((error, req, res, next) => {
