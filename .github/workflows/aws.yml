@@ -17,7 +17,7 @@ jobs:
       run: npm install
 
     - name: Build application
-      run: npm start
+      run: npm build
 
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
@@ -26,7 +26,8 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_PRIVATE_KEY }}
         script: |
-          cd /var/www/myapp
+          cd project/examroom-be-user-service
           git pull
           npm install
-          pm2 restart myapp
+          sudo docker-compose up --bild -d
+          echo 'Deploy success :)'
