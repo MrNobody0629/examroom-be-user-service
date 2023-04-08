@@ -25,7 +25,5 @@ jobs:
         port: ${{ secrets.EC2_PORT}}
         script: |
           cd project/examroom-be-user-service
-          git pull
-          npm install
-          sudo docker-compose up --build -d
+          ./deploy.sh
           echo 'Deploy success :)'
